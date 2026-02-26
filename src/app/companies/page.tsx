@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { startups, Startup } from "@/lib/mock-data";
@@ -24,7 +24,7 @@ interface List {
     createdAt: string;
 }
 
-export default function CompaniesPage() {
+function CompaniesContent() {
     const searchParams = useSearchParams();
 
     const [searchTerm, setSearchTerm] = useState(searchParams.get("q") || "");
@@ -49,7 +49,6 @@ export default function CompaniesPage() {
 
         if (q !== null) {
             setSearchTerm(q);
-            // If a search query is provided without a sector, reset sector to All
             if (sector === null) setSectorFilter("All");
         }
 
@@ -102,15 +101,13 @@ export default function CompaniesPage() {
                 stage: "Seed",
                 location: "Global",
                 website: data.website || "",
-                description: data.summary || "", // Map summary to description
+                description: data.summary || "",
                 tags: data.keywords || []
             };
 
             const updatedCustom = [...customStartups, newStartup];
             setCustomStartups(updatedCustom);
             localStorage.setItem("vc-custom-startups", JSON.stringify(updatedCustom));
-
-            // Also save the enrichment data for the profile page
             localStorage.setItem(`enrich-${newStartup.id}`, JSON.stringify(data));
 
             alert(`Found ${data.name}! Added to your discovery board.`);
@@ -129,7 +126,6 @@ export default function CompaniesPage() {
             localStorage.setItem("vc-custom-startups", JSON.stringify(updated));
         }
 
-        // Also remove from any lists
         const savedLists = localStorage.getItem("vc-lists");
         if (savedLists) {
             const lists = JSON.parse(savedLists);
@@ -268,7 +264,7 @@ export default function CompaniesPage() {
                     </tbody>
                 </table>
 
-                {currentStartups.length === 0 && (
+                {filteredStartups.length === 0 && (
                     <div className="p-20 text-center flex flex-col items-center gap-6">
                         <div className="w-16 h-16 bg-black/5 dark:bg-white/5 rounded-full flex items-center justify-center">
                             <Sparkles className="text-s-foreground" size={32} />
@@ -328,5 +324,17 @@ export default function CompaniesPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function CompaniesPage() {
+    return (
+        <Suspense fallback={
+            <div className="p-8 max-w-7xl mx-auto flex items-center justify-center min-h-[400px]">
+                <Loader2 size={32} className="animate-spin text-accent-primary" />
+            </div>
+        }>
+            <CompaniesContent />
+        </Suspense>
     );
 }
