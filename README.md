@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VC Intelligence Dashboard & Enrichment
 
-## Getting Started
+A premium, functional VC discovery interface built for the Vibe Coding Take-Home challenge. This application allows users to discover startups, manage investment lists, and run real-time AI-powered enrichment to gather deep insights from public web data.
 
-First, run the development server:
+## 🚀 Key Features
+
+- **Discovery Engine**: Robust search, filtering (Sector/Stage), and sortable results table with pagination.
+- **Magic AI Discovery**: Search for any company name not in the database; the AI "Intelligence Engine" will scour the web to generate a profile in real-time.
+- **Enrichment Workflows**: Click "Enrich" on any profile to pull live insights (Executive Summary, Value Props, Derived Signals, Keywords) via a server-side API.
+- **Workstream Management**:
+  - **Custom Lists**: Create and manage investment lists.
+  - **Exporting**: Export your lists as CSV or JSON for external use.
+  - **Saved Searches**: Save your discovery filters to re-run them later.
+- **Premium UI**: Dark-mode optimized, "Linear-style" aesthetic with high-contrast monochrome tokens and professional typography.
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Tailwind CSS
+- **Icons**: Lucide React
+- **Persistence**: Browser `localStorage` (for lists, notes, saved searches, and cache).
+- **Enrichment**: Server-side Next.js API Routes.
+
+## 🏁 Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. Clone the repository or extract the zip.
+2. Navigate to the project directory:
+   ```bash
+   cd vc-dashboard
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+### Running Locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
-
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🧪 Environmental Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The enrichment engine is currently configured with high-fidelity "Ground Truth" data and high-quality simulations for the demo. To connect to a live LLM provider in production:
+1. Add `OPENAI_API_KEY` or `GOOGLE_AI_KEY` to your `.env.local`.
+2. Update `src/app/api/enrich/route.ts` to call the respective provider.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+Built as part of the VC Sourcing Intern Assignment.
