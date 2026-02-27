@@ -9,7 +9,8 @@ import {
     Plus,
     Building2,
     ChevronRight,
-    ExternalLink
+    ExternalLink,
+    Upload
 } from "lucide-react";
 import Link from "next/link";
 import { SectorBadge } from "@/components/SectorBadge";
@@ -75,9 +76,10 @@ export default function ListsPage() {
         saveLists(updated);
     };
 
+    const combinedStartups = [...startups, ...customStartups];
     const activeList = lists.find(l => l.id === activeListId);
     const activeCompanies = activeList
-        ? startups.filter(s => activeList.companyIds.includes(s.id))
+        ? combinedStartups.filter(s => activeList.companyIds.includes(s.id))
         : [];
 
     const exportToJson = () => {
@@ -102,6 +104,68 @@ export default function ListsPage() {
         a.click();
     };
 
+    const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const content = event.target?.result as string;
+            let importedCompanies: any[] = [];
+            const listName = file.name.split(".")[0].replace(/[_-]/g, " ");
+
+            try {
+                if (file.name.endsWith(".json")) {
+                    importedCompanies = JSON.parse(content);
+                } else if (file.name.endsWith(".csv")) {
+                    const lines = content.split("\n");
+                    const headers = lines[0].toLowerCase().split(",");
+                    importedCompanies = lines.slice(1).filter(l => l.trim()).map(line => {
+                        const values = line.split(",");
+                        const obj: any = {};
+                        headers.forEach((h, i) => {
+                            const key = h.trim();
+                            if (key === "name" || key === "sector" || key === "stage" || key === "location" || key === "website") {
+                                obj[key] = values[i]?.trim();
+                            }
+                        });
+                        // Generate a temporary ID if not present
+                        obj.id = `imported-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                        return obj;
+                    });
+                }
+
+                if (importedCompanies.length > 0) {
+                    // Update custom startups metadata storage
+                    const updatedCustom = [...customStartups, ...importedCompanies];
+                    setCustomStartups(updatedCustom);
+                    localStorage.setItem("vc-custom-startups", JSON.stringify(updatedCustom));
+
+                    // Create new list
+                    const newList: List = {
+                        id: Date.now().toString(),
+                        name: listName.charAt(0).toUpperCase() + listName.slice(1),
+                        companyIds: importedCompanies.map(c => c.id),
+                        createdAt: new Date().toISOString()
+                    };
+                    saveLists([...lists, newList]);
+                    setActiveListId(newList.id);
+                }
+            } catch (err) {
+                console.error("Import failed:", err);
+                alert("Failed to import file. Please check the format.");
+            }
+        };
+
+        if (file.name.endsWith(".json") || file.name.endsWith(".csv")) {
+            reader.readAsText(file);
+        } else {
+            alert("Please upload a .json or .csv file.");
+        }
+        // Reset input
+        e.target.value = "";
+    };
+
     return (
         <div className="p-8 max-w-7xl mx-auto h-[calc(100vh-64px)] flex flex-col">
             <div className="mb-8 flex items-center justify-between">
@@ -114,45 +178,69 @@ export default function ListsPage() {
             <div className="flex-1 flex gap-8 min-h-0">
                 {/* Sidebar for Lists */}
                 <div className="w-64 flex flex-col gap-4">
-                    <div className="bg-card-bg border border-border-subtle rounded-xl p-4 shadow-sm flex flex-col gap-4">
-                        <div className="flex gap-2">
+                    <div className="bg-card-bg border border-border-subtle rounded-xl p-5 shadow-sm flex flex-col gap-6">
+                        <div className="flex flex-col gap-2">
+                            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Create New</label>
                             <input
                                 type="text"
-                                placeholder="New list..."
+                                placeholder="Workspace name..."
                                 value={newListName}
                                 onChange={(e) => setNewListName(e.target.value)}
-                                className="flex-1 bg-black/5 dark:bg-white/5 border border-border-subtle rounded px-2 py-1 text-xs outline-none focus:border-accent-primary"
+                                className="w-full bg-black/5 dark:bg-white/5 border border-border-subtle rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent-primary transition-all"
                             />
                             <button
                                 onClick={handleCreateList}
-                                className="p-1 bg-black dark:bg-white text-white dark:text-black rounded hover:opacity-80"
+                                className="w-full py-2.5 bg-black dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition-all active:scale-[0.98] premium-button flex items-center justify-center text-sm font-bold shadow-sm"
                             >
-                                <Plus size={16} />
+                                Create Workspace
                             </button>
                         </div>
 
-                        <div className="flex flex-col gap-1 max-h-[400px] overflow-y-auto">
-                            {lists.map(list => (
-                                <div
-                                    key={list.id}
-                                    onClick={() => setActiveListId(list.id)}
-                                    className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition-colors group ${activeListId === list.id ? "bg-black/5 dark:bg-white/5 font-medium" : "hover:bg-black/5"}`}
-                                >
-                                    <div className="flex items-center gap-2 truncate">
-                                        <FolderIcon size={14} className={activeListId === list.id ? "text-accent-primary" : "text-s-foreground"} />
-                                        <span className="text-sm truncate">{list.name}</span>
-                                    </div>
-                                    <button
-                                        onClick={(e) => handleDeleteList(list.id, e)}
-                                        className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-500 transition-all"
+                        <div className="flex flex-col gap-2">
+                            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">External Data</label>
+                            <label
+                                className="w-full h-11 flex items-center justify-center gap-3 bg-black/5 dark:bg-white/5 border border-dashed border-border-subtle rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-all cursor-pointer group active:scale-[0.98] premium-button shadow-sm hover:border-accent-primary"
+                                title="Import list (JSON/CSV)"
+                            >
+                                <Upload size={18} className="text-s-foreground group-hover:text-accent-primary transition-colors" />
+                                <span className="text-sm font-semibold text-foreground group-hover:text-accent-primary transition-colors">Import Files</span>
+                                <input
+                                    type="file"
+                                    accept=".json,.csv"
+                                    onChange={handleImport}
+                                    className="hidden"
+                                />
+                            </label>
+                        </div>
+
+                        <div className="pt-2 border-t border-border-subtle/50">
+                            <div className="flex items-center justify-between mb-3">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Saved Workspaces</span>
+                                <span className="text-[10px] px-1.5 py-0.5 bg-black/5 dark:bg-white/5 rounded text-s-foreground">{lists.length}</span>
+                            </div>
+                            <div className="flex flex-col gap-1 max-h-[300px] overflow-y-auto">
+                                {lists.map(list => (
+                                    <div
+                                        key={list.id}
+                                        onClick={() => setActiveListId(list.id)}
+                                        className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition-colors group ${activeListId === list.id ? "bg-black/5 dark:bg-white/5 font-medium" : "hover:bg-black/5"}`}
                                     >
-                                        <Trash2 size={12} />
-                                    </button>
-                                </div>
-                            ))}
-                            {lists.length === 0 && (
-                                <p className="text-xs text-s-foreground italic p-2">Create your first list above</p>
-                            )}
+                                        <div className="flex items-center gap-2 truncate">
+                                            <FolderIcon size={14} className={activeListId === list.id ? "text-accent-primary" : "text-s-foreground"} />
+                                            <span className="text-sm truncate">{list.name}</span>
+                                        </div>
+                                        <button
+                                            onClick={(e) => handleDeleteList(list.id, e)}
+                                            className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-500 transition-all"
+                                        >
+                                            <Trash2 size={12} />
+                                        </button>
+                                    </div>
+                                ))}
+                                {lists.length === 0 && (
+                                    <p className="text-xs text-s-foreground italic p-2">Create your first list above</p>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

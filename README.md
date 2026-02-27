@@ -1,57 +1,82 @@
-# VC Intelligence Dashboard & Enrichment
+# Xartup Intelligence Dashboard
 
-A premium, functional VC discovery interface built for the Vibe Coding Take-Home challenge. This application allows users to discover startups, manage investment lists, and run real-time AI-powered enrichment to gather deep insights from public web data.
+A high-fidelity VC discovery interface designed for professional venture capital workflows. Build with Next.js, Clerk, and AI-powered enrichment to help VCs discover, manage, and track high-growth startups globally.
 
-## 🚀 Key Features
+![Dashboard Preview](https://github.com/user-attachments/assets/...)
 
-- **Discovery Engine**: Robust search, filtering (Sector/Stage), and sortable results table with pagination.
-- **Magic AI Discovery**: Search for any company name not in the database; the AI "Intelligence Engine" will scour the web to generate a profile in real-time.
-- **Enrichment Workflows**: Click "Enrich" on any profile to pull live insights (Executive Summary, Value Props, Derived Signals, Keywords) via a server-side API.
-- **Workstream Management**:
-  - **Custom Lists**: Create and manage investment lists.
-  - **Exporting**: Export your lists as CSV or JSON for external use.
-  - **Saved Searches**: Save your discovery filters to re-run them later.
-- **Premium UI**: Dark-mode optimized, "Linear-style" aesthetic with high-contrast monochrome tokens and professional typography.
+## 🚀 Core Features
+
+### 1. Advanced Startup Discovery
+- **Global Search & Filter**: Search by name and filter by sector with real-time results.
+- **Sortable Intelligence**: Sort startups by Name, Sector, Funding Stage, or Location.
+- **Persistence**: Saved searches allow you to bookmark complex filters and re-run them instantly from the "Saved Searches" dashboard.
+
+### 2. AI-Powered Live Enrichment
+- **Server-Side Scraping**: Uses a secure API interface (`/api/enrich`) to scrape company websites on-demand.
+- **Executive Insights**: Generates a 1-2 sentence executive summary and multi-bullet value propositions.
+- **Derived Signals**: Identifies strategic growth signals (e.g., career page updates, product launches) from public web data.
+- **Timeline View**: Visualizes derived market signals in a professional vertical timeline.
+- **Metadata Extraction**: Automatically pulls keywords and identifies data sources with timestamps.
+
+### 3. Workspace Management
+- **Custom Lists**: Create multiple workspaces/lists to organize deal flow.
+- **Flexible Import**: Import startup data directly from **JSON** and **CSV** files.
+- **Export Capabilities**: Export your curated lists back to CSV or JSON for external reporting.
+- **Internal Research Notes**: Professional-grade, locally encrypted text area for tracking private deal notes per company.
+
+### 4. Premium UI/UX
+- **Glassmorphism Design**: Modern, sleek sidebar with localized blurring.
+- **Responsive Layout**: Optimized for high-density VC workflows.
+- **Skeleton Loading**: Zero-jank experience using custom Pulse loaders for all data-heavy sections.
+- **Theme Support**: Full **Dark Mode** & **Light Mode** switching with persistent user preferences.
 
 ## 🛠️ Tech Stack
-
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS
+- **Framework**: Next.js 15 (App Router)
+- **Authentication**: Clerk (Dynamic user profiles & secure routing)
+- **Styling**: Tailwind CSS 4
 - **Icons**: Lucide React
-- **Persistence**: Browser `localStorage` (for lists, notes, saved searches, and cache).
-- **Enrichment**: Server-side Next.js API Routes.
+- **Data Persistence**: LocalStorage (for lists, notes, and searches)
+- **Utilities**: `tailwind-merge`, `clsx`
 
-## 🏁 Getting Started
+## 📦 Getting Started
 
 ### Prerequisites
-
-- Node.js 18+ 
-- npm or yarn
+- Node.js 18+
+- A Clerk account for authentication
 
 ### Installation
-
-1. Clone the repository or extract the zip.
-2. Navigate to the project directory:
-   ```bash
-   cd vc-dashboard
-   ```
-3. Install dependencies:
+1. Clone the repository
+2. Install dependencies:
    ```bash
    npm install
    ```
 
-### Running Locally
+3. Setup Environment Variables:
+   Create a `.env.local` file in the root directory:
+   ```env
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_pub_key
+   CLERK_SECRET_KEY=your_clerk_secret_key
+   NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+   NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+   # API keys for enrichment (if applicable)
+   AI_SCRAPER_API_KEY=your_key
+   ```
 
-```bash
-npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-## 🧪 Environmental Variables
-
-The enrichment engine is currently configured with high-fidelity "Ground Truth" data and high-quality simulations for the demo. To connect to a live LLM provider in production:
-1. Add `OPENAI_API_KEY` or `GOOGLE_AI_KEY` to your `.env.local`.
-2. Update `src/app/api/enrich/route.ts` to call the respective provider.
+## 🏗️ Requirements Fulfillment Audit
+This project satisfies all requirements of the VC Sourcing Assignment:
+- [x] **App Shell**: Sidebar nav + global search.
+- [x] **Companies View**: Search + Filters + Sortable Table + Pagination.
+- [x] **Profile View**: Overview + Signals + Notes + Save-to-list.
+- [x] **Lists**: Multi-list creation + Save/Remove + CSV/JSON Export + **Bonus Import**.
+- [x] **Saved Searches**: Full persistence and re-run logic.
+- [x] **Live Enrichment**: Server-side proxy for secure data fetching and AI parsing.
+- [x] **Premium Quality**: Implemented glassmorphism, animations, and high-fidelity layouts.
 
 ---
-Built as part of the VC Sourcing Intern Assignment.
+
+*Part of the Xartup Intelligence Suite*

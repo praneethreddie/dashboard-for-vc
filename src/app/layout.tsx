@@ -16,8 +16,8 @@ import {
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "VC Startup Discovery Dashboard",
-  description: "Enrich startup insights with AI",
+  title: "Xartup | VC Intelligence Dashboard",
+  description: "Enrich startup insights with AI-powered discovery",
 };
 
 export default function RootLayout({
@@ -27,7 +27,21 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
+        <head>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function() {
+                  try {
+                    var theme = localStorage.getItem('theme') || 'light';
+                    document.documentElement.setAttribute('data-theme', theme);
+                  } catch (e) {}
+                })();
+              `,
+            }}
+          />
+        </head>
         <body className={`${inter.className} text-foreground antialiased`}>
           <div className="flex min-h-screen bg-background text-foreground">
             <Sidebar />

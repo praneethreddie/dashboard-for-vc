@@ -276,12 +276,20 @@ export default function ProfilePage() {
                                                 </ul>
                                             </div>
                                             <div>
-                                                <h4 className="text-xs font-bold text-s-foreground uppercase tracking-wider mb-3">Market Derived Signals</h4>
-                                                <div className="flex flex-wrap gap-2">
+                                                <h4 className="text-xs font-bold text-s-foreground uppercase tracking-wider mb-6">Market Derived Signals</h4>
+                                                <div className="relative pl-4 border-l-2 border-border-subtle space-y-8">
                                                     {enrichmentData.derivedSignals.map((signal: string, i: number) => (
-                                                        <span key={i} className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2.5 py-1 rounded-md text-xs font-semibold">
-                                                            {signal}
-                                                        </span>
+                                                        <div key={i} className="relative">
+                                                            <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-card-bg" />
+                                                            <div className="flex flex-col gap-1">
+                                                                <span className="text-sm font-semibold text-foreground leading-none">
+                                                                    {signal}
+                                                                </span>
+                                                                <span className="text-[10px] text-s-foreground uppercase tracking-wider">
+                                                                    Signal detected • {new Date(enrichmentData.timestamp).toLocaleDateString()}
+                                                                </span>
+                                                            </div>
+                                                        </div>
                                                     ))}
                                                 </div>
                                             </div>

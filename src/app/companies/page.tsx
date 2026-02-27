@@ -204,12 +204,24 @@ function CompaniesContent() {
                         <tr>
                             <th className="px-6 py-4 font-semibold cursor-pointer group" onClick={() => handleSort("name")}>
                                 <div className="flex items-center gap-2">
-                                    Name <ArrowUpDown size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    Name <ArrowUpDown size={14} className={`${sortField === "name" ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`} />
                                 </div>
                             </th>
-                            <th className="px-6 py-4 font-semibold">Sector</th>
-                            <th className="px-6 py-4 font-semibold">Stage</th>
-                            <th className="px-6 py-4 font-semibold">Location</th>
+                            <th className="px-6 py-4 font-semibold cursor-pointer group" onClick={() => handleSort("sector")}>
+                                <div className="flex items-center gap-2">
+                                    Sector <ArrowUpDown size={14} className={`${sortField === "sector" ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`} />
+                                </div>
+                            </th>
+                            <th className="px-6 py-4 font-semibold cursor-pointer group" onClick={() => handleSort("stage")}>
+                                <div className="flex items-center gap-2">
+                                    Stage <ArrowUpDown size={14} className={`${sortField === "stage" ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`} />
+                                </div>
+                            </th>
+                            <th className="px-6 py-4 font-semibold cursor-pointer group" onClick={() => handleSort("location")}>
+                                <div className="flex items-center gap-2">
+                                    Location <ArrowUpDown size={14} className={`${sortField === "location" ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`} />
+                                </div>
+                            </th>
                             <th className="px-6 py-4 font-semibold">Website</th>
                             <th className="px-6 py-4 font-semibold text-right">Actions</th>
                         </tr>
@@ -218,7 +230,7 @@ function CompaniesContent() {
                         {currentStartups.map((startup, index) => (
                             <tr
                                 key={`${startup.id}-${index}`}
-                                className="hover:bg-slate-50 dark:hover:bg-white/5 cursor-pointer transition-colors group"
+                                className="hover:bg-slate-50 dark:hover:bg-white/5 cursor-pointer transition-colors group table-row-hover"
                             >
                                 <td className="px-6 py-5">
                                     <Link href={`/companies/${startup.id}`} className="block">
@@ -265,24 +277,24 @@ function CompaniesContent() {
                 </table>
 
                 {filteredStartups.length === 0 && (
-                    <div className="p-20 text-center flex flex-col items-center gap-6">
+                    <div className="p-20 text-center flex flex-col items-center gap-6 animate-in fade-in duration-500">
                         <div className="w-16 h-16 bg-black/5 dark:bg-white/5 rounded-full flex items-center justify-center">
                             <Sparkles className="text-s-foreground" size={32} />
                         </div>
                         <div className="max-w-md">
                             <h3 className="text-xl font-bold mb-2">
-                                {searchTerm ? `No results for "${searchTerm}"` : "Search to begin discovery"}
+                                {searchTerm ? `Start discovering "${searchTerm}"` : "Search to begin discovery"}
                             </h3>
                             <p className="text-sm text-s-foreground mb-8">
                                 {searchTerm
-                                    ? "We couldn't find this company in our database. Use our AI to scour the web and generate a profile."
+                                    ? "We couldn't find this company in our records. Use our AI to scour the web and generate a profile."
                                     : "Enter a company name above to find it in our records or scour the web."}
                             </p>
                             {searchTerm && (
                                 <button
                                     onClick={handleMagicDiscovery}
                                     disabled={isDiscovering}
-                                    className="inline-flex items-center gap-2 bg-black dark:bg-white text-white dark:text-black px-8 py-3 rounded-full text-base font-bold hover:scale-105 active:scale-95 transition-all shadow-lg disabled:opacity-50 disabled:scale-100"
+                                    className="inline-flex items-center gap-2 bg-black dark:bg-white text-white dark:text-black px-8 py-3 rounded-full text-base font-bold hover:scale-105 active:scale-95 transition-all shadow-lg disabled:opacity-50 disabled:scale-100 premium-button"
                                 >
                                     {isDiscovering ? (
                                         <>
@@ -292,7 +304,7 @@ function CompaniesContent() {
                                     ) : (
                                         <>
                                             <Sparkles size={24} />
-                                            Discover &quot;{searchTerm}&quot; with AI
+                                            Enrich &quot;{searchTerm}&quot; via AI
                                         </>
                                     )}
                                 </button>
@@ -327,11 +339,21 @@ function CompaniesContent() {
     );
 }
 
+import { TableSkeleton } from "@/components/Skeleton";
+
 export default function CompaniesPage() {
     return (
         <Suspense fallback={
-            <div className="p-8 max-w-7xl mx-auto flex items-center justify-center min-h-[400px]">
-                <Loader2 size={32} className="animate-spin text-accent-primary" />
+            <div className="p-8 max-w-7xl mx-auto">
+                <div className="mb-8 flex flex-col gap-6">
+                    <div>
+                        <div className="h-9 w-48 bg-black/5 dark:bg-white/5 animate-pulse rounded-lg mb-2" />
+                        <div className="h-4 w-64 bg-black/5 dark:bg-white/5 animate-pulse rounded-lg" />
+                    </div>
+                </div>
+                <div className="bg-card-bg border border-border-subtle rounded-xl overflow-hidden shadow-sm">
+                    <TableSkeleton />
+                </div>
             </div>
         }>
             <CompaniesContent />

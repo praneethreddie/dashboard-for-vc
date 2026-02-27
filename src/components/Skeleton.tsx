@@ -1,24 +1,39 @@
-export function Skeleton({ className }: { className?: string }) {
+"use client";
+
+import { cn } from "../lib/utils";
+
+interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
+    className?: string;
+}
+
+export function Skeleton({ className, ...props }: SkeletonProps) {
     return (
-        <div className={`animate-pulse bg-black/5 dark:bg-white/5 rounded-md ${className}`} />
+        <div
+            className={cn("animate-pulse rounded-md bg-black/5 dark:bg-white/5", className)}
+            {...props}
+        />
     );
 }
 
-export function StartupCardSkeleton() {
+export function TableSkeleton() {
     return (
-        <div className="bg-card-bg border border-border-subtle rounded-xl p-6 flex flex-col gap-4">
-            <div className="flex items-center gap-4">
-                <Skeleton className="w-12 h-12 rounded-lg" />
-                <div className="flex-1">
-                    <Skeleton className="w-32 h-4 mb-2" />
-                    <Skeleton className="w-24 h-3" />
+        <div className="w-full space-y-4">
+            <div className="flex items-center space-x-4 px-6 py-4">
+                <Skeleton className="h-4 w-[20%]" />
+                <Skeleton className="h-4 w-[15%]" />
+                <Skeleton className="h-4 w-[15%]" />
+                <Skeleton className="h-4 w-[20%]" />
+                <Skeleton className="h-4 w-[20%]" />
+            </div>
+            {[...Array(5)].map((_, i) => (
+                <div key={i} className="flex items-center space-x-4 px-6 py-5 border-t border-border-subtle/50">
+                    <Skeleton className="h-6 w-[20%]" />
+                    <Skeleton className="h-6 w-[15%]" />
+                    <Skeleton className="h-6 w-[15%]" />
+                    <Skeleton className="h-6 w-[20%]" />
+                    <Skeleton className="h-6 w-[20%]" />
                 </div>
-            </div>
-            <Skeleton className="w-full h-16" />
-            <div className="flex gap-2">
-                <Skeleton className="w-16 h-5 rounded-full" />
-                <Skeleton className="w-16 h-5 rounded-full" />
-            </div>
+            ))}
         </div>
     );
 }
