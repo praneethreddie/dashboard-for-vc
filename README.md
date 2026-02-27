@@ -2,7 +2,7 @@
 
 A high-fidelity VC discovery interface designed for professional venture capital workflows. Build with Next.js, Clerk, and AI-powered enrichment to help VCs discover, manage, and track high-growth startups globally.
 
-![Dashboard Preview](https://github.com/user-attachments/assets/...)
+[Dashboard Preview](https://dashboard-for-vc-cvai.vercel.app)
 
 ## 🚀 Core Features
 
