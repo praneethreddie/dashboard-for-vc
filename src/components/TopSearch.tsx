@@ -54,24 +54,6 @@ export default function TopSearch() {
                 <div className="text-xs text-s-foreground font-medium bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-full hover:bg-black/10 transition-colors cursor-pointer mr-2">
                     Enrich API: 80% left
                 </div>
-
-                <SignedOut>
-                    <SignInButton mode="modal">
-                        <button className="text-sm font-medium bg-accent-primary text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity">
-                            Sign In
-                        </button>
-                    </SignInButton>
-                </SignedOut>
-                <SignedIn>
-                    <UserButton
-                        afterSignOutUrl="/"
-                        appearance={{
-                            elements: {
-                                avatarBox: "h-8 w-8"
-                            }
-                        }}
-                    />
-                </SignedIn>
             </div>
         </div>
     );
